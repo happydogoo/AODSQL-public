@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "AODSQL CLI",
+            "type": "python",
+            "request": "launch",
+            "module": "cli.main",           // 用包方式启动
+            "cwd": "${workspaceFolder}",    // 工作目录必须是AODSQL根目录
+            "console": "integratedTerminal"
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+SELECT non_exist_column FROM students; 

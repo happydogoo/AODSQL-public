@@ -1,0 +1,343 @@
+2025-09-16 16:16:53.985 | INFO     | __main__:main:248 - 开始运行 SQL 编译器测试 (词法/语法/语义/执行计划)...
+2025-09-16 16:16:53.986 | INFO     | __main__:run_case:42 - [TEST] Lexical: 基本Token识别
+2025-09-16 16:16:53.986 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:16:53.986 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.986 | INFO     | __main__:run_case:42 - [TEST] Lexical: 字符串与数字
+2025-09-16 16:16:53.986 | INFO     | __main__:run_case:43 - SQL: INSERT INTO users VALUES (1, 'Alice', 30);
+2025-09-16 16:16:53.986 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.986 | INFO     | __main__:run_case:42 - [TEST] Lexical: 异常字符处理
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:43 - SQL: SELECT @invalid FROM users;
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:42 - [TEST] Lexical: 注释与复合运算符
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:43 - SQL: -- comment
+SELECT * FROM users WHERE age >= 18 and name != 'Bob';
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:42 - [TEST] Syntax: CREATE TABLE
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:43 - SQL: CREATE TABLE users (id INT, name VARCHAR(50), age INT);
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:42 - [TEST] Syntax: INSERT
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:43 - SQL: INSERT INTO users VALUES (1, 'Alice', 30);
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:42 - [TEST] Syntax: SELECT
+2025-09-16 16:16:53.987 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:42 - [TEST] Syntax: DELETE
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:43 - SQL: DELETE FROM users WHERE age < 18;
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:42 - [TEST] Syntax: 语法错误定位
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:43 - SQL: SELECT FROM WHERE;
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:42 - [TEST] Semantic: 存在性-通过
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:42 - [TEST] Semantic: 表不存在
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:43 - SQL: SELECT name FROM no_such_table;
+2025-09-16 16:16:53.988 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.989 | INFO     | __main__:run_case:42 - [TEST] Semantic: 列不存在
+2025-09-16 16:16:53.989 | INFO     | __main__:run_case:43 - SQL: SELECT not_exist FROM users;
+2025-09-16 16:16:53.989 | ERROR    | __main__:run_case:50 - RESULT: FAIL | Assertion failed: 应失败: 列不存在
+
+2025-09-16 16:16:53.990 | DEBUG    | __main__:run_case:51 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 167, in _exist_bad_col
+    assert not legacy.analyze(ast), "应失败: 列不存在"
+AssertionError: 应失败: 列不存在
+
+2025-09-16 16:16:53.990 | INFO     | __main__:run_case:42 - [TEST] Semantic: 类型不匹配
+2025-09-16 16:16:53.990 | INFO     | __main__:run_case:43 - SQL: SELECT * FROM users WHERE age = 'abc';
+2025-09-16 16:16:53.991 | ERROR    | __main__:run_case:50 - RESULT: FAIL | Assertion failed: 应失败: 类型不兼容
+
+2025-09-16 16:16:53.991 | DEBUG    | __main__:run_case:51 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 174, in _type_bad
+    assert not legacy.analyze(ast), "应失败: 类型不兼容"
+AssertionError: 应失败: 类型不兼容
+
+2025-09-16 16:16:53.991 | INFO     | __main__:run_case:42 - [TEST] Semantic: 列数不匹配
+2025-09-16 16:16:53.991 | INFO     | __main__:run_case:43 - SQL: INSERT INTO users VALUES (1, 'Alice');
+2025-09-16 16:16:53.991 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:16:53.991 | INFO     | __main__:run_case:42 - [TEST] Semantic: Catalog维护-创建表
+2025-09-16 16:16:53.991 | INFO     | __main__:run_case:43 - SQL: CREATE TABLE orders (id INT, user_id INT, amount DECIMAL);
+2025-09-16 16:16:53.993 | ERROR    | __main__:run_case:50 - RESULT: FAIL | Assertion failed: 符号表应新增表 orders
+
+2025-09-16 16:16:53.993 | DEBUG    | __main__:run_case:51 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 189, in _catalog_create
+    assert symbol_table.table_exists("orders"), "符号表应新增表 orders"
+AssertionError: 符号表应新增表 orders
+
+2025-09-16 16:16:53.995 | INFO     | __main__:run_case:42 - [TEST] Plan: SELECT
+2025-09-16 16:16:53.995 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:16:53.995 | ERROR    | __main__:run_case:55 - RESULT: FAIL | Exception: 'gbk' codec can't encode character '\u2705' in position 0: illegal multibyte sequence
+
+2025-09-16 16:16:53.996 | DEBUG    | __main__:run_case:56 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 234, in _make
+    plan = EnhancedQueryPlanner(st).create_plan(ast)
+  File "C:\Users\lixing\Desktop\AODSQL\sql_compiler\enhanced_query_planner.py", line 124, in create_plan
+    return self._create_select_plan(query_node)
+  File "C:\Users\lixing\Desktop\AODSQL\sql_compiler\enhanced_query_planner.py", line 169, in _create_select_plan
+    print(f"✅ 从普通表 '{table_name}' 创建 ScanOperator...")
+UnicodeEncodeError: 'gbk' codec can't encode character '\u2705' in position 0: illegal multibyte sequence
+
+2025-09-16 16:16:53.996 | INFO     | __main__:run_case:42 - [TEST] Plan: PROJECT
+2025-09-16 16:16:53.996 | INFO     | __main__:run_case:43 - SQL: SELECT name FROM users;
+2025-09-16 16:16:53.996 | ERROR    | __main__:run_case:55 - RESULT: FAIL | Exception: 'gbk' codec can't encode character '\u2705' in position 0: illegal multibyte sequence
+
+2025-09-16 16:16:53.996 | DEBUG    | __main__:run_case:56 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 234, in _make
+    plan = EnhancedQueryPlanner(st).create_plan(ast)
+  File "C:\Users\lixing\Desktop\AODSQL\sql_compiler\enhanced_query_planner.py", line 124, in create_plan
+    return self._create_select_plan(query_node)
+  File "C:\Users\lixing\Desktop\AODSQL\sql_compiler\enhanced_query_planner.py", line 169, in _create_select_plan
+    print(f"✅ 从普通表 '{table_name}' 创建 ScanOperator...")
+UnicodeEncodeError: 'gbk' codec can't encode character '\u2705' in position 0: illegal multibyte sequence
+
+2025-09-16 16:16:53.997 | INFO     | __main__:main:257 - ============================================================
+2025-09-16 16:16:53.997 | INFO     | __main__:main:258 - 总用例: 17 | 通过: 12 | 失败: 5
+2025-09-16 16:16:53.997 | INFO     | __main__:main:260 - 失败用例详情:
+2025-09-16 16:16:53.997 | INFO     | __main__:main:263 - - Semantic: 列不存在: Assertion failed: 应失败: 列不存在
+2025-09-16 16:16:53.997 | INFO     | __main__:main:263 - - Semantic: 类型不匹配: Assertion failed: 应失败: 类型不兼容
+2025-09-16 16:16:53.997 | INFO     | __main__:main:263 - - Semantic: Catalog维护-创建表: Assertion failed: 符号表应新增表 orders
+2025-09-16 16:16:53.997 | INFO     | __main__:main:263 - - Plan: SELECT: Exception: 'gbk' codec can't encode character '\u2705' in position 0: illegal multibyte sequence
+2025-09-16 16:16:53.997 | INFO     | __main__:main:263 - - Plan: PROJECT: Exception: 'gbk' codec can't encode character '\u2705' in position 0: illegal multibyte sequence
+2025-09-16 16:17:14.016 | INFO     | __main__:main:248 - 开始运行 SQL 编译器测试 (词法/语法/语义/执行计划)...
+2025-09-16 16:17:14.016 | INFO     | __main__:run_case:42 - [TEST] Lexical: 基本Token识别
+2025-09-16 16:17:14.016 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:17:14.017 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.017 | INFO     | __main__:run_case:42 - [TEST] Lexical: 字符串与数字
+2025-09-16 16:17:14.017 | INFO     | __main__:run_case:43 - SQL: INSERT INTO users VALUES (1, 'Alice', 30);
+2025-09-16 16:17:14.017 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.017 | INFO     | __main__:run_case:42 - [TEST] Lexical: 异常字符处理
+2025-09-16 16:17:14.017 | INFO     | __main__:run_case:43 - SQL: SELECT @invalid FROM users;
+2025-09-16 16:17:14.017 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.018 | INFO     | __main__:run_case:42 - [TEST] Lexical: 注释与复合运算符
+2025-09-16 16:17:14.018 | INFO     | __main__:run_case:43 - SQL: -- comment
+SELECT * FROM users WHERE age >= 18 and name != 'Bob';
+2025-09-16 16:17:14.019 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.019 | INFO     | __main__:run_case:42 - [TEST] Syntax: CREATE TABLE
+2025-09-16 16:17:14.019 | INFO     | __main__:run_case:43 - SQL: CREATE TABLE users (id INT, name VARCHAR(50), age INT);
+2025-09-16 16:17:14.019 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.019 | INFO     | __main__:run_case:42 - [TEST] Syntax: INSERT
+2025-09-16 16:17:14.019 | INFO     | __main__:run_case:43 - SQL: INSERT INTO users VALUES (1, 'Alice', 30);
+2025-09-16 16:17:14.019 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.019 | INFO     | __main__:run_case:42 - [TEST] Syntax: SELECT
+2025-09-16 16:17:14.019 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:17:14.021 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.021 | INFO     | __main__:run_case:42 - [TEST] Syntax: DELETE
+2025-09-16 16:17:14.021 | INFO     | __main__:run_case:43 - SQL: DELETE FROM users WHERE age < 18;
+2025-09-16 16:17:14.021 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.021 | INFO     | __main__:run_case:42 - [TEST] Syntax: 语法错误定位
+2025-09-16 16:17:14.022 | INFO     | __main__:run_case:43 - SQL: SELECT FROM WHERE;
+2025-09-16 16:17:14.022 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.022 | INFO     | __main__:run_case:42 - [TEST] Semantic: 存在性-通过
+2025-09-16 16:17:14.023 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:17:14.023 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.024 | INFO     | __main__:run_case:42 - [TEST] Semantic: 表不存在
+2025-09-16 16:17:14.024 | INFO     | __main__:run_case:43 - SQL: SELECT name FROM no_such_table;
+2025-09-16 16:17:14.024 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.024 | INFO     | __main__:run_case:42 - [TEST] Semantic: 列不存在
+2025-09-16 16:17:14.024 | INFO     | __main__:run_case:43 - SQL: SELECT not_exist FROM users;
+2025-09-16 16:17:14.025 | ERROR    | __main__:run_case:50 - RESULT: FAIL | Assertion failed: 应失败: 列不存在
+
+2025-09-16 16:17:14.025 | DEBUG    | __main__:run_case:51 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 167, in _exist_bad_col
+    assert not legacy.analyze(ast), "应失败: 列不存在"
+AssertionError: 应失败: 列不存在
+
+2025-09-16 16:17:14.025 | INFO     | __main__:run_case:42 - [TEST] Semantic: 类型不匹配
+2025-09-16 16:17:14.026 | INFO     | __main__:run_case:43 - SQL: SELECT * FROM users WHERE age = 'abc';
+2025-09-16 16:17:14.026 | ERROR    | __main__:run_case:50 - RESULT: FAIL | Assertion failed: 应失败: 类型不兼容
+
+2025-09-16 16:17:14.026 | DEBUG    | __main__:run_case:51 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 174, in _type_bad
+    assert not legacy.analyze(ast), "应失败: 类型不兼容"
+AssertionError: 应失败: 类型不兼容
+
+2025-09-16 16:17:14.026 | INFO     | __main__:run_case:42 - [TEST] Semantic: 列数不匹配
+2025-09-16 16:17:14.026 | INFO     | __main__:run_case:43 - SQL: INSERT INTO users VALUES (1, 'Alice');
+2025-09-16 16:17:14.027 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.027 | INFO     | __main__:run_case:42 - [TEST] Semantic: Catalog维护-创建表
+2025-09-16 16:17:14.027 | INFO     | __main__:run_case:43 - SQL: CREATE TABLE orders (id INT, user_id INT, amount DECIMAL);
+2025-09-16 16:17:14.028 | ERROR    | __main__:run_case:50 - RESULT: FAIL | Assertion failed: 符号表应新增表 orders
+
+2025-09-16 16:17:14.028 | DEBUG    | __main__:run_case:51 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 189, in _catalog_create
+    assert symbol_table.table_exists("orders"), "符号表应新增表 orders"
+AssertionError: 符号表应新增表 orders
+
+2025-09-16 16:17:14.029 | INFO     | __main__:run_case:42 - [TEST] Plan: SELECT
+2025-09-16 16:17:14.030 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:17:14.030 | INFO     | __main__:_make:239 - 计划树:
+┌─ PROJECT
+   ├─ columns: ['users.name', 'users.age']
+   └─ FILTER
+      ├─ condition: (Identifier(token=('ID', 'age', 0, 0), value='age') Token[Type: >=, Literal: '>=', Pos: 0:0] Literal(token=('NUMBER', '18', 1, 41), value='18'))
+      └─ SCAN
+         ├─ table_name: users
+         └─ alias: users
+2025-09-16 16:17:14.030 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.030 | INFO     | __main__:run_case:42 - [TEST] Plan: PROJECT
+2025-09-16 16:17:14.030 | INFO     | __main__:run_case:43 - SQL: SELECT name FROM users;
+2025-09-16 16:17:14.030 | INFO     | __main__:_make:239 - 计划树:
+┌─ PROJECT
+   ├─ columns: ['users.name']
+   └─ SCAN
+      ├─ table_name: users
+      └─ alias: users
+2025-09-16 16:17:14.033 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:17:14.033 | INFO     | __main__:main:257 - ============================================================
+2025-09-16 16:17:14.033 | INFO     | __main__:main:258 - 总用例: 17 | 通过: 14 | 失败: 3
+2025-09-16 16:17:14.033 | INFO     | __main__:main:260 - 失败用例详情:
+2025-09-16 16:17:14.033 | INFO     | __main__:main:263 - - Semantic: 列不存在: Assertion failed: 应失败: 列不存在
+2025-09-16 16:17:14.033 | INFO     | __main__:main:263 - - Semantic: 类型不匹配: Assertion failed: 应失败: 类型不兼容
+2025-09-16 16:17:14.033 | INFO     | __main__:main:263 - - Semantic: Catalog维护-创建表: Assertion failed: 符号表应新增表 orders
+2025-09-16 16:21:46.175 | INFO     | __main__:main:248 - 开始运行 SQL 编译器测试 (词法/语法/语义/执行计划)...
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Lexical: 基本Token识别
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Lexical: 字符串与数字
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: INSERT INTO users VALUES (1, 'Alice', 30);
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Lexical: 异常字符处理
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: SELECT @invalid FROM users;
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Lexical: 注释与复合运算符
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: -- comment
+SELECT * FROM users WHERE age >= 18 and name != 'Bob';
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Syntax: CREATE TABLE
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: CREATE TABLE users (id INT, name VARCHAR(50), age INT);
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Syntax: INSERT
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: INSERT INTO users VALUES (1, 'Alice', 30);
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Syntax: SELECT
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Syntax: DELETE
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: DELETE FROM users WHERE age < 18;
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Syntax: 语法错误定位
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: SELECT FROM WHERE;
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Semantic: 存在性-通过
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Semantic: 表不存在
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: SELECT name FROM no_such_table;
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:42 - [TEST] Semantic: 列不存在
+2025-09-16 16:21:46.175 | INFO     | __main__:run_case:43 - SQL: SELECT not_exist FROM users;
+2025-09-16 16:21:46.175 | ERROR    | __main__:run_case:50 - RESULT: FAIL | Assertion failed: 应失败: 列不存在
+
+2025-09-16 16:21:46.180 | DEBUG    | __main__:run_case:51 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 167, in _exist_bad_col
+    assert not legacy.analyze(ast), "应失败: 列不存在"
+AssertionError: 应失败: 列不存在
+
+2025-09-16 16:21:46.180 | INFO     | __main__:run_case:42 - [TEST] Semantic: 类型不匹配
+2025-09-16 16:21:46.180 | INFO     | __main__:run_case:43 - SQL: SELECT * FROM users WHERE age = 'abc';
+2025-09-16 16:21:46.180 | ERROR    | __main__:run_case:50 - RESULT: FAIL | Assertion failed: 应失败: 类型不兼容
+
+2025-09-16 16:21:46.180 | DEBUG    | __main__:run_case:51 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 174, in _type_bad
+    assert not legacy.analyze(ast), "应失败: 类型不兼容"
+AssertionError: 应失败: 类型不兼容
+
+2025-09-16 16:21:46.180 | INFO     | __main__:run_case:42 - [TEST] Semantic: 列数不匹配
+2025-09-16 16:21:46.181 | INFO     | __main__:run_case:43 - SQL: INSERT INTO users VALUES (1, 'Alice');
+2025-09-16 16:21:46.181 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.181 | INFO     | __main__:run_case:42 - [TEST] Semantic: Catalog维护-创建表
+2025-09-16 16:21:46.181 | INFO     | __main__:run_case:43 - SQL: CREATE TABLE orders (id INT, user_id INT, amount DECIMAL);
+2025-09-16 16:21:46.181 | ERROR    | __main__:run_case:50 - RESULT: FAIL | Assertion failed: 符号表应新增表 orders
+
+2025-09-16 16:21:46.182 | DEBUG    | __main__:run_case:51 - Traceback (most recent call last):
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 45, in run_case
+    func()
+  File "C:\Users\lixing\Desktop\AODSQL\run_sql_compiler_tests.py", line 189, in _catalog_create
+    assert symbol_table.table_exists("orders"), "符号表应新增表 orders"
+AssertionError: 符号表应新增表 orders
+
+2025-09-16 16:21:46.183 | INFO     | __main__:run_case:42 - [TEST] Plan: SELECT
+2025-09-16 16:21:46.183 | INFO     | __main__:run_case:43 - SQL: SELECT name, age FROM users WHERE age >= 18;
+2025-09-16 16:21:46.184 | INFO     | __main__:_make:239 - 计划树:
+┌─ PROJECT
+   ├─ columns: ['users.name', 'users.age']
+   └─ FILTER
+      ├─ condition: (Identifier(token=('ID', 'age', 0, 0), value='age') Token[Type: >=, Literal: '>=', Pos: 0:0] Literal(token=('NUMBER', '18', 1, 41), value='18'))
+      └─ SCAN
+         ├─ table_name: users
+         └─ alias: users
+2025-09-16 16:21:46.184 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.184 | INFO     | __main__:run_case:42 - [TEST] Plan: PROJECT
+2025-09-16 16:21:46.184 | INFO     | __main__:run_case:43 - SQL: SELECT name FROM users;
+2025-09-16 16:21:46.184 | INFO     | __main__:_make:239 - 计划树:
+┌─ PROJECT
+   ├─ columns: ['users.name']
+   └─ SCAN
+      ├─ table_name: users
+      └─ alias: users
+2025-09-16 16:21:46.185 | INFO     | __main__:run_case:46 - RESULT: PASS
+
+2025-09-16 16:21:46.185 | INFO     | __main__:main:257 - ============================================================
+2025-09-16 16:21:46.185 | INFO     | __main__:main:258 - 总用例: 17 | 通过: 14 | 失败: 3
+2025-09-16 16:21:46.185 | INFO     | __main__:main:260 - 失败用例详情:
+2025-09-16 16:21:46.185 | INFO     | __main__:main:263 - - Semantic: 列不存在: Assertion failed: 应失败: 列不存在
+2025-09-16 16:21:46.185 | INFO     | __main__:main:263 - - Semantic: 类型不匹配: Assertion failed: 应失败: 类型不兼容
+2025-09-16 16:21:46.185 | INFO     | __main__:main:263 - - Semantic: Catalog维护-创建表: Assertion failed: 符号表应新增表 orders

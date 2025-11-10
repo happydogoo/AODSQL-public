@@ -1,0 +1,10 @@
+colorama==0.4.6
+iniconfig==2.1.0
+loguru==0.7.3
+packaging==25.0
+pluggy==1.6.0
+Pygments==2.19.2
+pytest==8.4.2
+win32_setctime==1.2.0
+rich==13.7.0
+customtkinter==5.2.2
